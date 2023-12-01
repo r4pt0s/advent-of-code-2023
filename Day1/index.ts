@@ -16,7 +16,7 @@ console.log(
 );
 
 console.log(
-    `Part 2 => What is the sum of all of the calibration values should be 57345?\n${calculateSum(
+    `Part 2 => What is the sum of all of the calibration values?\n${calculateSum(
         splitInput,
         true
     )}`
