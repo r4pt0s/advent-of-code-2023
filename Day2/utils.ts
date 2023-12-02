@@ -1,47 +1,21 @@
-type MaxCubesMap = {
-    [key: string]: number;
-};
 
-const maxCubesMap: MaxCubesMap = {
-    blue: 14,
-    red: 12,
-    green: 13,
-};
+const validCubeRegex = () => new RegExp(`([1-9][5-9]{1,} blue)|[2-9][0-9] blue|([1-9][3-9]{1,} red)|[2-9][0-9]{1,} red|([1-9][4-9]{1,} green)|[2-9][0-9]{1,} green`, "gm");
 
-const cubeRegex = (cube: string) => new RegExp(`\\d+\\s${cube}`, 'gm');
 
-const isValidCubeInRound = (rounds: string, cube: string) => {
-    const workSet = rounds.match(cubeRegex(cube));
+const isValidGame = (rounds: string) =>
+  validCubeRegex().test(rounds)
 
-    if (!workSet) {
-        return true;
+export const guessedValidGames = (games: string[]) =>
+  games.reduce((gameSum, game) => {
+    const [gameMeta, rounds] = game.split(`:`);
+
+    if (isValidGame(rounds)) {
+       return gameSum;
     }
+    
+    return (gameSum += Number(gameMeta.replace("Game ", "")));
+  }, 0);
 
-    for (const match of workSet) {
-        const parsed = parseInt(match.replace(cube, ''));
-
-        if (parsed > maxCubesMap[cube]) {
-            return false;
-        }
-    }
-
-    return true;
-};
-
-export const guessedValidGamesSum = (games: string[]) =>
-    games.reduce((gameSum, game: string) => {
-        const [gameMeta, rounds] = game.split(`:`);
-
-        if (
-            !isValidCubeInRound(rounds, 'blue') ||
-            !isValidCubeInRound(rounds, 'red') ||
-            !isValidCubeInRound(rounds, 'green')
-        ) {
-            return gameSum;
-        }
-
-        return (gameSum += Number(gameMeta.replace('Game ', '')));
-    }, 0);
 
 export const getMinNeededCubes = (games: string[]) => {
     return games.reduce((minCubePowerOfSet, game) => {
